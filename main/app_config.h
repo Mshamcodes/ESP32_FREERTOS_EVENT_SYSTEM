@@ -15,13 +15,23 @@
 /* Include headers */
 #include "driver/gpio.h"
 
+/* ================= GPIO Configuration ================= */
 /* Button GPIO configuration*/
 #define BUTTON_GPIO            GPIO_NUM_4               // GPIO4 
 #define BUTTON_INTR_TYPE       GPIO_INTR_NEGEDGE        // TYPE - NEGEDGE
 
+/* ================= UART Configuration ================= */
 /* UART TX-RX buffer size*/
 #define UART_TX_BUF_SIZE   1024
 #define UART_RX_BUF_SIZE   1024
+
+/* ================= I2C Configuration ================= */
+/* I2C Global definations */
+#define I2C_MASTER_PORT      I2C_NUM_0
+#define I2C_MASTER_FREQ_HZ   100000                       
+
+#define I2C_SDA_GPIO         GPIO_NUM_21                // GPIO21 
+#define I2C_SCL_GPIO         GPIO_NUM_22                // GPI022 
 
 // Event for button press
 typedef enum {

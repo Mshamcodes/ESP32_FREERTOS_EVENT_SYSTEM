@@ -15,6 +15,7 @@
 #include "freertos/queue.h"
 #include "esp_log.h"
 #include "uart_driver.h"
+#include "i2c_driver.h"
 #include "app_config.h"
 
 /* Global variables */
@@ -32,6 +33,10 @@ void gpio_task(void *arg)
             char msg[64];
             snprintf(msg, sizeof(msg), "Button press event received\n");
             xQueueSend(uart_queue, msg, portMAX_DELAY);
+
+            // Notify I2C subsystem
+            i2c_event_t i2c_evt = I2C_EVENT_BUTTON_PRESS;
+            xQueueSend(i2c_evt_queue, &i2c_evt, portMAX_DELAY);
         }
     }
 }

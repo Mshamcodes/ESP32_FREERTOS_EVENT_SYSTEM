@@ -14,19 +14,16 @@
 #include "gpio_driver.h"
 #include "app_config.h"
 #include "uart_driver.h"
-
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include "esp_system.h"
 #include "esp32/rom/ets_sys.h"
-
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 
 /* Global variables */
 QueueHandle_t gpio_evt_queue = NULL;
 static const char *TAG = "GPIO";
-
 
 // GPIO ISR handler function used for invoking interrupt based on GPIO action.
 // Stored in IRAM section of memory so can be accessed at any time.
@@ -54,11 +51,11 @@ void gpio_driver_init(void)
         .pull_down_en = GPIO_PULLDOWN_DISABLE,
         .intr_type = BUTTON_INTR_TYPE
     };
-    
+
     gpio_config(&io_conf);                                         
     gpio_install_isr_service(0);                                                    
+    
     gpio_isr_handler_add(BUTTON_GPIO, gpio_isr_handler, (void*) BUTTON_GPIO);
-
     ESP_LOGI(TAG, "GPIO interrupt configured on GPIO %d", BUTTON_GPIO);
 
     snprintf(msg, sizeof(msg), "GPIO event configured with UART\n");
