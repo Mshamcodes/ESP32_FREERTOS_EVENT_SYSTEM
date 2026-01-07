@@ -59,7 +59,7 @@ void app_main(void)
     i2c_driver_init();
     i2c_timer_init();
 
-    // Create TASKs for GPIO and UART
+    // Create TASKs for GPIO, UART and I2C
     xTaskCreate(gpio_task, "gpio_task", 2048, NULL, 10, NULL);
     xTaskCreate(uart_task, "uart_task", 2048, NULL, 10, NULL);
     xTaskCreate(i2c_task, "i2c_task", 2048, NULL, 10, NULL);
