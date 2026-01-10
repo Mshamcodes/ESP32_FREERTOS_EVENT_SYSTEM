@@ -107,7 +107,7 @@ idf.py flash monitor
 
 On boot time: 
 
-![alt text](image-1.png)
+![alt text](Images/ESP32_connection_setup.png)
 
 I (342) MAIN: ENTRY POINT OF ESP-32 application
 I (352) UART_DRIVER: UART driver init successful
@@ -115,7 +115,7 @@ I (352) I2C: I2C master initialized
 
 On button press:
 
-![alt text](image.png)
+![alt text](Images/ESP32_Button_press_setup.png)
 
 Button press event received
 I (xxxx) I2C: I2C TASK: Button pressed event received
