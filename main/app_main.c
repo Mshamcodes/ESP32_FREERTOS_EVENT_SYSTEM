@@ -1,30 +1,29 @@
 /*  *************************************************************************************
     app_main.c
     ESP32_FREERTOS_EVENT_SYSTEM Main Entry Point
-    This file contains the main entry point for the ESP-32 FREERTOS application. It first creates 
-    GPIO queue and then initializes GPIO driver and UART DRIVER followed by task creation of both
-    GPIO and UART.
+    This file contains the main entry point for the ESP-32 FREERTOS application. It first 
+    creates event queues then followed by driver inits and at last task creation for    
+    GPIO interrupt, UART and I2C respectively.
     *************************************************************************************
 */
 
 /* Include headers */
+#include "app_config.h"
+
 #include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "freertos/queue.h"
-#include "esp_log.h"
+#include "freertos/task.h"
+ 
 #include "gpio_driver.h"
 #include "uart_driver.h"
 #include "i2c_driver.h"
-#include "app_config.h"
 
-/* Global variables */
-extern QueueHandle_t gpio_evt_queue;
-QueueHandle_t i2c_evt_queue = NULL;
+#include "esp_log.h"
 
 /* Main entry point of the APPLICATION */
 void app_main(void)
 {
-    ESP_LOGI("MAIN", "ENTRY POINT OF ESP-32 application");
+    ESP_LOGI("MAIN", "Booting the ESP-32 application");
 
     // Create GPIO event queue
     gpio_evt_queue = xQueueCreate(10, sizeof(gpio_event_t));

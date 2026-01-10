@@ -20,17 +20,29 @@
 
 
 /* Include headers */
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/queue.h"
-#include "esp_log.h"
 #include "i2c_driver.h"
+
 #include "app_config.h"
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
+
+#include "esp_log.h"
+
 
 /* Global variables */
 static const char *TAG = "I2C";
 
-// I2C task
+
+/**
+ * @brief I2C event handling task
+ *
+ * Handles I2C-related events received from the I2C event queue.
+ * Events may originate from GPIO button presses or periodic
+ * software timers, enabling event-driven I2C operations.
+ *
+ * @param arg Unused task parameter
+ */
 void i2c_task(void *arg)
 {
     i2c_event_t evt;

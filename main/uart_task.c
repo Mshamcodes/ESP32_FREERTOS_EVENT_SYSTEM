@@ -11,19 +11,27 @@
 
 /* Include headers */
 #include <string.h>
+#include "uart_driver.h"
+
 #include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "freertos/queue.h"
 #include "freertos/semphr.h"
-#include "driver/uart.h"
+
 #include "esp_log.h"
-#include "uart_driver.h"
 
 /* Global variables */
 static const char *TAG = "UART_TASK";
 static SemaphoreHandle_t uart_mutex;
 
-// UART task
+/**
+ * @brief UART transmission task
+ *
+ * Receives log messages from the UART queue and transmits
+ * them over the UART interface. A mutex is used to ensure
+ * thread-safe access to the UART peripheral.
+ *
+ * @param arg Unused task parameter
+ */
 void uart_task(void *arg)
 {
     char msg[64];

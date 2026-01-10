@@ -9,19 +9,29 @@
     *************************************************************************************
 */
 
+
 /* Include headers */
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/queue.h"
-#include "esp_log.h"
 #include "uart_driver.h"
 #include "i2c_driver.h"
+#include "gpio_driver.h"
+
 #include "app_config.h"
 
-/* Global variables */
-extern QueueHandle_t gpio_evt_queue;
+#include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
 
-// GPIO task
+#include "esp_log.h"
+
+
+/**
+ * @brief GPIO event processing task
+ *
+ * Waits for button interrupt events from the GPIO event queue.
+ * On a button press, the task logs the event via UART and
+ * forwards a corresponding event to the I2C subsystem.
+ *
+ * @param arg Unused task parameter
+ */
 void gpio_task(void *arg)
 {
     gpio_event_t evt;
@@ -32,6 +42,8 @@ void gpio_task(void *arg)
         {
             char msg[64];
             snprintf(msg, sizeof(msg), "Button press event received\n");
+            
+            // Notify UART subsystem
             xQueueSend(uart_queue, msg, portMAX_DELAY);
 
             // Notify I2C subsystem

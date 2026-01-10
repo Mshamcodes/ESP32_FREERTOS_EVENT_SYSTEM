@@ -10,18 +10,27 @@
  
 /* Include headers */
 #include "uart_driver.h"
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
+#include "freertos/semphr.h"
+
 #include "app_config.h"
-#include "driver/uart.h"
+
 #include "esp_log.h"
 
-/* Include definations */
-#define UART_PORT UART_NUM_0
 
 /* Global variables */
 static const char *TAG = "UART_DRIVER";
 QueueHandle_t uart_queue = NULL;
 
-// UART driver init
+/**
+ * @brief Initialize UART driver
+ *
+ * Configures the UART peripheral parameters and installs the
+ * UART driver. A message queue is used for asynchronous,
+ * thread-safe UART transmission handled by the UART task.
+ */
 void uart_driver_init(void)
 {
     uart_config_t uart_config = {

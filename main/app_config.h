@@ -12,9 +12,6 @@
 #ifndef APP_CONFIG_H
 #define APP_CONFIG_H
 
-/* Include headers */
-#include "driver/gpio.h"
-
 /* ================= GPIO Configuration ================= */
 /* Button GPIO configuration*/
 #define BUTTON_GPIO            GPIO_NUM_4               // GPIO4 
@@ -22,21 +19,16 @@
 
 /* ================= UART Configuration ================= */
 /* UART TX-RX buffer size*/
-#define UART_TX_BUF_SIZE   1024
-#define UART_RX_BUF_SIZE   1024
+#define UART_TX_BUF_SIZE       1024
+#define UART_RX_BUF_SIZE       1024
+#define UART_PORT              UART_NUM_0
 
-/* ================= I2C Configuration ================= */
+/* ================= I2C Configuration ================== */
 /* I2C Global definations */
-#define I2C_MASTER_PORT      I2C_NUM_0
-#define I2C_MASTER_FREQ_HZ   100000                       
+#define I2C_MASTER_PORT        I2C_NUM_0
+#define I2C_MASTER_FREQ_HZ     100000                       
 
-#define I2C_SDA_GPIO         GPIO_NUM_21                // GPIO21 
-#define I2C_SCL_GPIO         GPIO_NUM_22                // GPI022 
-
-// Event for button press
-typedef enum {
-    GPIO_EVENT_BUTTON_PRESS
-} gpio_event_t;
-
+#define I2C_SDA_GPIO           GPIO_NUM_21              // GPIO21 
+#define I2C_SCL_GPIO           GPIO_NUM_22              // GPI022 
 
 #endif  // APP_CONFIG_H

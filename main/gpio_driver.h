@@ -10,8 +10,19 @@
 #ifndef GPIO_DRIVER_H
 #define GPIO_DRIVER_H
 
-/* Global Function definations */
+/* Include headers */
+#include "driver/gpio.h"
+
+/* Global Function declarations */
 void gpio_driver_init(void);
 void gpio_task(void *arg);
+
+/* Global variables */
+extern QueueHandle_t gpio_evt_queue;
+
+/* Event for GPIO button press */
+typedef enum {
+    GPIO_EVENT_BUTTON_PRESS
+} gpio_event_t;
 
 #endif  // GPIO_DRIVER_H

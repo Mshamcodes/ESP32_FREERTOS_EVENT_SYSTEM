@@ -19,17 +19,19 @@
 
 /* Include headers */
 #include "i2c_driver.h"
+
 #include "app_config.h"
-#include "driver/i2c.h"
-#include "esp_log.h"
-#include "esp_system.h"
-#include "esp32/rom/ets_sys.h"
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
+
+#include "esp_log.h"
+
 
 /* Global variables */
 static const char *TAG = "I2C";
 static TimerHandle_t i2c_timer;
+QueueHandle_t i2c_evt_queue = NULL;
 
 
 /* I2C Timer callback */
@@ -60,7 +62,12 @@ void i2c_timer_init(void)
     ESP_LOGI(TAG, "I2C software timer started");
 }
 
-// I2C driver init
+/**
+ * @brief Initialize I2C master driver
+ *
+ * Configures the ESP32 I2C peripheral in master mode by setting
+ * SDA/SCL pins, clock frequency, and internal pull-ups.
+ */
 void i2c_driver_init(void)
 {
     i2c_config_t conf = {
@@ -77,5 +84,3 @@ void i2c_driver_init(void)
 
     ESP_LOGI(TAG, "I2C master initialized");
 }
-
-

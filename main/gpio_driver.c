@@ -9,24 +9,34 @@
     *************************************************************************************
 */
 
-
 /* Include headers */
-#include "gpio_driver.h"
-#include "app_config.h"
 #include "uart_driver.h"
-#include "driver/gpio.h"
-#include "esp_log.h"
-#include "esp_system.h"
-#include "esp32/rom/ets_sys.h"
+#include "gpio_driver.h"
+
+#include "app_config.h"
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 
-/* Global variables */
-QueueHandle_t gpio_evt_queue = NULL;
-static const char *TAG = "GPIO";
+#include "esp_log.h"
 
-// GPIO ISR handler function used for invoking interrupt based on GPIO action.
-// Stored in IRAM section of memory so can be accessed at any time.
+/* Global variables */
+static const char *TAG = "GPIO";
+QueueHandle_t gpio_evt_queue = NULL;
+
+/**
+ * @brief GPIO interrupt service routine
+ *
+ * Minimal ISR triggered on button GPIO interrupt.
+ * The ISR captures the button press event and posts it
+ * to the GPIO event queue for deferred processing by
+ * the GPIO task.
+ *
+ * No blocking operations or logging are performed
+ * inside the ISR to ensure fast and safe execution.
+ *
+ * @param arg GPIO number associated with the interrupt
+ */
 static void IRAM_ATTR gpio_isr_handler(void *arg)
 {
     gpio_event_t evt = GPIO_EVENT_BUTTON_PRESS;
@@ -39,7 +49,12 @@ static void IRAM_ATTR gpio_isr_handler(void *arg)
     }
 }
 
-// GPIO init driver
+/**
+ * @brief Initialize GPIO for button interrupt
+ *
+ * Configures the button GPIO as an input with interrupt capability
+ * and registers a minimal ISR that posts button events to a queue.
+ */
 void gpio_driver_init(void)
 {
     char msg[64];
