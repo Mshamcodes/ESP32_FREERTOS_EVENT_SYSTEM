@@ -18,7 +18,6 @@
     *************************************************************************************
 */
 
-
 /* Include headers */
 #include "i2c_driver.h"
 
@@ -29,10 +28,8 @@
 
 #include "esp_log.h"
 
-
 /* Global variables */
 static const char *TAG = "I2C";
-
 
 /**
  * @brief I2C event handling task

@@ -22,7 +22,6 @@
 
 #include "esp_log.h"
 
-
 /**
  * @brief GPIO event processing task
  *
@@ -42,7 +41,7 @@ void gpio_task(void *arg)
         {
             char msg[64];
             snprintf(msg, sizeof(msg), "Button press event received\n");
-            
+
             // Notify UART subsystem
             xQueueSend(uart_queue, msg, portMAX_DELAY);
 

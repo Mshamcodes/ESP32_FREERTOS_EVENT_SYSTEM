@@ -63,6 +63,4 @@ void app_main(void)
     xTaskCreate(uart_task, "uart_task", 2048, NULL, 10, NULL);
     xTaskCreate(i2c_task, "i2c_task", 2048, NULL, 10, NULL);
 }
-  
-
 

@@ -21,5 +21,3 @@ void uart_task(void *arg);
 void uart_driver_init(void);
 
 #endif    // UART_DRIVER_H
-
-

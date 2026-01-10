@@ -16,7 +16,6 @@
     *************************************************************************************
 */
 
-
 /* Include headers */
 #include "i2c_driver.h"
 
@@ -27,12 +26,10 @@
 
 #include "esp_log.h"
 
-
 /* Global variables */
 static const char *TAG = "I2C";
 static TimerHandle_t i2c_timer;
 QueueHandle_t i2c_evt_queue = NULL;
-
 
 /* I2C Timer callback */
 static void i2c_timer_callback(TimerHandle_t xTimer)

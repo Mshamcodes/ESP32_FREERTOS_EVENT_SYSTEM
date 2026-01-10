@@ -19,7 +19,6 @@
 
 #include "esp_log.h"
 
-
 /* Global variables */
 static const char *TAG = "UART_DRIVER";
 QueueHandle_t uart_queue = NULL;
