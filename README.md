@@ -18,31 +18,33 @@ Key objectives:
 
 ## High-Level System Flow
 
-BUTTON PRESS (GPIO)
-        │
-        ▼
-  GPIO INTERRUPT (ISR)
-        │
-        ▼
-  GPIO EVENT QUEUE
-        │
-        ▼
-     GPIO TASK
-        │
-        ├── Sends message → UART QUEUE → UART TASK → Serial Output
-        │
-        └── Sends event → I2C EVENT QUEUE → I2C TASK
-                                      │
-                                      ├── Button-based I2C action
-                                      └── Timer-based I2C action
+        BUTTON PRESS (GPIO)
+                │
+                ▼
+          GPIO INTERRUPT (ISR)
+                │
+                ▼
+          GPIO EVENT QUEUE
+                │
+                ▼
+             GPIO TASK
+                │
+                ├── Sends message → UART QUEUE → UART TASK → Serial Output
+                │
+                └── Sends event → I2C EVENT QUEUE → I2C TASK
+                                                      │
+                                                      ├── Button-based I2C action
+                                                      └── Timer-based I2C action
 
-FREE RTOS TIMER (1s)
-        │
-        ▼
-  I2C EVENT QUEUE
-        │
-        ▼
-     I2C TASK
+        PARALLEL PROCESS 
+                |
+        FREE RTOS TIMER (1s)
+                │
+                ▼
+          I2C EVENT QUEUE
+                │
+                ▼
+             I2C TASK
 
 
 1. **app_main()**
@@ -74,17 +76,17 @@ FREE RTOS TIMER (1s)
 
 ## Project Structure
 
-├── app_main.c          // Entry point
-├── app_config.h        // Central configuration
+        ├── app_main.c          // Entry point
+        ├── app_config.h        // Central configuration
 
-├── gpio_driver.c       // GPIO init + ISR
-├── gpio_task.c         // GPIO event handling
+        ├── gpio_driver.c       // GPIO init + ISR
+        ├── gpio_task.c         // GPIO event handling
 
-├── uart_driver.c       // UART init
-├── uart_task.c         // UART logging task
+        ├── uart_driver.c       // UART init
+        ├── uart_task.c         // UART logging task
 
-├── i2c_driver.c        // I2C init + timer
-├── i2c_task.c          // I2C event handling
+        ├── i2c_driver.c        // I2C init + timer
+        ├── i2c_task.c          // I2C event handling
 
 ---
 
