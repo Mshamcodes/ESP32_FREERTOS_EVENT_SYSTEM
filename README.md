@@ -124,6 +124,83 @@ Periodic I2C activity
 
 I (xxxx) I2C: I2C TASK: Timer event received
 
+--- 
+
+## CHALLENGES FACED WHILE CREATING THE PROJECT 
+
+
+-  1️⃣ ISR Logging Caused Unreliable Behavior
+
+   ❌ Issue:
+
+      Logs were missing or system behaved strangely when logging from ISR
+      Sometimes ESP32 reset or logs didn’t appear
+
+   🔍 Root Cause:
+
+      ESP_LOGx() uses: Flash access, Locks and Non-ISR-safe operations
+
+      ISR must be minimal and deterministic
+      Flash may be unavailable during interrupt execution
+
+   ✅ Solution
+   
+      Removed logging from ISR
+
+   📌 Learning 
+      
+      ISR should signal, not process.
+
+
+
+-  2️⃣ IRAM_ATTR Needed for ISR Stability
+
+   ❌ Issue
+      
+      ISR sometimes crashed or behaved unpredictably
+
+   🔍 Root Cause
+
+      ISR code stored in flash
+      Flash access may be blocked during interrupts
+
+   ✅ Solution
+
+      Marked ISR with IRAM_ATTR
+      Ensured ISR code is placed in internal RAM
+
+   📌 Learning
+
+      ISRs must reside in IRAM on ESP32
+
+
+
+-  6️⃣ GPIO Interrupt Flood (Multiple Button Events)
+
+   ❌ Issue
+      
+      One button press generated dozens of events
+      Logs flooded continuously
+
+   🔍 Root Cause
+      
+      Hardware issue: Floating GPIO, No proper button / pull-up / pull-down and Jumper wire touching GND caused noise
+
+   ✅ Solution
+
+      Used proper pull-up configuration
+      Used real button or stable connection
+      Confirmed issue was hardware, not debounce logic
+
+   📌 Learning
+  
+      Not every bug is software — always suspect hardware first
+
+
+
+
+
+
 
 
 
