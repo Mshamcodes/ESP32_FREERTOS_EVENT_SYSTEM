@@ -11,10 +11,13 @@
 #define GPIO_DRIVER_H
 
 /* Include headers */
+#include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
+#include "esp_err.h"
 #include "driver/gpio.h"
 
 /* Global Function declarations */
-void gpio_driver_init(void);
+esp_err_t gpio_driver_init(void);
 void gpio_task(void *arg);
 
 /* Global variables */

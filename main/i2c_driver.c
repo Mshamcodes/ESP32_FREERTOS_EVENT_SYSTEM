@@ -21,8 +21,10 @@
 
 #include "app_config.h"
 
+#include "esp_err.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
+#include "freertos/timers.h"
 
 #include "esp_log.h"
 
@@ -36,11 +38,14 @@ static void i2c_timer_callback(TimerHandle_t xTimer)
 {
     i2c_event_t evt = I2C_EVENT_PERIODIC;
     // Non-blocking send (timer context)
-    xQueueSend(i2c_evt_queue, &evt, 0);
+    if (i2c_evt_queue != NULL)
+    {
+        xQueueSend(i2c_evt_queue, &evt, 0);
+    }
 }
 
 /* Initialize and start I2C software timer */
-void i2c_timer_init(void)
+esp_err_t i2c_timer_init(void)
 {
     i2c_timer = xTimerCreate("i2c_timer", 
                             pdMS_TO_TICKS(1000),  // 1 second 
@@ -52,11 +57,17 @@ void i2c_timer_init(void)
     if (i2c_timer == NULL) 
     {
         ESP_LOGE(TAG, "Failed to create I2C timer");
-        return;
+        return ESP_ERR_NO_MEM;
     }
 
-    xTimerStart(i2c_timer, 0);
+    if (xTimerStart(i2c_timer, 0) != pdPASS)
+    {
+        ESP_LOGE(TAG, "Failed to start I2C timer");
+        return ESP_FAIL;
+    }
+
     ESP_LOGI(TAG, "I2C software timer started");
+    return ESP_OK;
 }
 
 /**
@@ -65,7 +76,7 @@ void i2c_timer_init(void)
  * Configures the ESP32 I2C peripheral in master mode by setting
  * SDA/SCL pins, clock frequency, and internal pull-ups.
  */
-void i2c_driver_init(void)
+esp_err_t i2c_driver_init(void)
 {
     i2c_config_t conf = {
         .mode = I2C_MODE_MASTER,
@@ -76,8 +87,20 @@ void i2c_driver_init(void)
         .master.clk_speed = I2C_MASTER_FREQ_HZ
     };
 
-    i2c_param_config(I2C_MASTER_PORT, &conf);
-    i2c_driver_install(I2C_MASTER_PORT, conf.mode, 0, 0, 0);
+    esp_err_t err = i2c_param_config(I2C_MASTER_PORT, &conf);
+    if (err != ESP_OK)
+    {
+        ESP_LOGE(TAG, "i2c_param_config failed: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    err = i2c_driver_install(I2C_MASTER_PORT, conf.mode, 0, 0, 0);
+    if (err != ESP_OK)
+    {
+        ESP_LOGE(TAG, "i2c_driver_install failed: %s", esp_err_to_name(err));
+        return err;
+    }
 
     ESP_LOGI(TAG, "I2C master initialized");
+    return ESP_OK;
 }

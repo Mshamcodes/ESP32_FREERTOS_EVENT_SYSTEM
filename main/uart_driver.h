@@ -11,13 +11,16 @@
 #define UART_DRIVER_H
 
 /* Include headers */
+#include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
+#include "esp_err.h"
 #include "driver/uart.h"
 
-/* Global variables */
+/* Global variables */  
 extern QueueHandle_t uart_queue;
 
 /* Global Function declarations */
 void uart_task(void *arg);
-void uart_driver_init(void);
+esp_err_t uart_driver_init(void);
 
 #endif    // UART_DRIVER_H

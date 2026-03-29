@@ -18,11 +18,14 @@
 #include "uart_driver.h"
 #include "i2c_driver.h"
 
+#include "esp_err.h"
 #include "esp_log.h"
 
 /* Main entry point of the APPLICATION */
 void app_main(void)
 {
+    esp_err_t err;
+
     ESP_LOGI("MAIN", "Booting the ESP-32 application");
 
     // Create GPIO event queue
@@ -53,14 +56,51 @@ void app_main(void)
     }
 
     // Initialize drivers for GPIO, UART and I2C
-    gpio_driver_init();
-    uart_driver_init();
-    i2c_driver_init();
-    i2c_timer_init();
+    err = uart_driver_init();
+    if (err != ESP_OK)
+    {
+        ESP_LOGE("MAIN", "UART init failed: %s", esp_err_to_name(err));
+        return;
+    }
+
+    err = gpio_driver_init();
+    if (err != ESP_OK)
+    {
+        ESP_LOGE("MAIN", "GPIO init failed: %s", esp_err_to_name(err));
+        return;
+    }
+
+    err = i2c_driver_init();
+    if (err != ESP_OK)
+    {
+        ESP_LOGE("MAIN", "I2C init failed: %s", esp_err_to_name(err));
+        return;
+    }
+
+    err = i2c_timer_init();
+    if (err != ESP_OK)
+    {
+        ESP_LOGE("MAIN", "I2C timer init failed: %s", esp_err_to_name(err));
+        return;
+    }
 
     // Create TASKs for GPIO, UART and I2C
-    xTaskCreate(gpio_task, "gpio_task", 2048, NULL, 10, NULL);
-    xTaskCreate(uart_task, "uart_task", 2048, NULL, 10, NULL);
-    xTaskCreate(i2c_task, "i2c_task", 2048, NULL, 10, NULL);
+    if (xTaskCreate(gpio_task, "gpio_task", 2048, NULL, 10, NULL) != pdPASS)
+    {
+        ESP_LOGE("MAIN", "Failed to create gpio_task");
+        return;
+    }
+
+    if (xTaskCreate(uart_task, "uart_task", 2048, NULL, 10, NULL) != pdPASS)
+    {
+        ESP_LOGE("MAIN", "Failed to create uart_task");
+        return;
+    }
+
+    if (xTaskCreate(i2c_task, "i2c_task", 2048, NULL, 10, NULL) != pdPASS)
+    {
+        ESP_LOGE("MAIN", "Failed to create i2c_task");
+        return;
+    }
 }
 

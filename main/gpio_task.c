@@ -11,6 +11,8 @@
 
 
 /* Include headers */
+#include <stdio.h>
+
 #include "uart_driver.h"
 #include "i2c_driver.h"
 #include "gpio_driver.h"

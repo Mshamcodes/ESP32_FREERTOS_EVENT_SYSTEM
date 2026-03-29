@@ -10,6 +10,8 @@
 */
 
 /* Include headers */
+#include <stdio.h>
+
 #include "uart_driver.h"
 #include "gpio_driver.h"
 
@@ -18,6 +20,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 
+#include "esp_err.h"
 #include "esp_log.h"
 
 /* Global variables */
@@ -55,7 +58,7 @@ static void IRAM_ATTR gpio_isr_handler(void *arg)
  * Configures the button GPIO as an input with interrupt capability
  * and registers a minimal ISR that posts button events to a queue.
  */
-void gpio_driver_init(void)
+esp_err_t gpio_driver_init(void)
 {
     char msg[64];
     // GPIO config table to map the respected config parameter based on config type
@@ -67,12 +70,34 @@ void gpio_driver_init(void)
         .intr_type = BUTTON_INTR_TYPE
     };
 
-    gpio_config(&io_conf);                                         
-    gpio_install_isr_service(0);                                                    
-    
-    gpio_isr_handler_add(BUTTON_GPIO, gpio_isr_handler, (void*) BUTTON_GPIO);
+    esp_err_t err = gpio_config(&io_conf);
+    if (err != ESP_OK)
+    {
+        ESP_LOGE(TAG, "gpio_config failed: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    err = gpio_install_isr_service(0);
+    if (err != ESP_OK && err != ESP_ERR_INVALID_STATE)
+    {
+        ESP_LOGE(TAG, "gpio_install_isr_service failed: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    err = gpio_isr_handler_add(BUTTON_GPIO, gpio_isr_handler, (void*) BUTTON_GPIO);
+    if (err != ESP_OK)
+    {
+        ESP_LOGE(TAG, "gpio_isr_handler_add failed: %s", esp_err_to_name(err));
+        return err;
+    }
+
     ESP_LOGI(TAG, "GPIO interrupt configured on GPIO %d", BUTTON_GPIO);
 
     snprintf(msg, sizeof(msg), "GPIO event configured with UART\n");
-    xQueueSend(uart_queue, msg, portMAX_DELAY);
+    if (uart_queue != NULL && xQueueSend(uart_queue, msg, 0) != pdPASS)
+    {
+        ESP_LOGW(TAG, "UART queue full, dropping GPIO init message");
+    }
+
+    return ESP_OK;
 }

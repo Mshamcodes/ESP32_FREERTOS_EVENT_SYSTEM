@@ -3,4 +3,4 @@
 cmake_minimum_required(VERSION 3.16)
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(ESP32 FreeRTOS Event-Driven Communication Framework)
+project(ESP32_FREERTOS_EVENT_SYSTEM)

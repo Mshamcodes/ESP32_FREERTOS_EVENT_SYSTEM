@@ -20,6 +20,9 @@
 #define I2C_DRIVER_H
 
 /* Include headers */
+#include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
+#include "esp_err.h"
 #include "driver/i2c.h"
 
 /* I2C event types */
@@ -32,8 +35,8 @@ typedef enum {
 extern QueueHandle_t i2c_evt_queue;
 
 /* Global Function declarations */
-void i2c_driver_init(void);
+esp_err_t i2c_driver_init(void);
 void i2c_task(void *arg);
-void i2c_timer_init(void);
+esp_err_t i2c_timer_init(void);
 
 #endif  // I2C_DRIVER_H
